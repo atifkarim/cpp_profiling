@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+# All folder created due to CMake build process
+/**/build
+/**/bin
+/**/lib
+clang_profiling/test_folder
+
+# All profdata created dute to clang compiler profiling
+/**/*.profdata
+/**/*.profraw
