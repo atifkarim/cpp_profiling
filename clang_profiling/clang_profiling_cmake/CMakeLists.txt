@@ -50,6 +50,9 @@ find_package(LLVM REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
+include_directories(${LLVM_INCLUDE_DIRS})
+add_definitions(${LLVM_DEFINITIONS})
+
 # Create the C++ shared library
 add_library(${MAIN_TARGET_NAME}_lib SHARED ${${PROJECT_NAME}_SOURCE_DIR}/src/test_gprof.cpp
                                            ${${PROJECT_NAME}_SOURCE_DIR}/src/test_gprof_new.cpp)
@@ -71,5 +74,9 @@ set_target_properties(${MAIN_TARGET_NAME}_lib PROPERTIES OUTPUT_NAME "clang_prof
 set_target_properties(${MAIN_TARGET_NAME}_lib PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${${PROJECT_NAME}_SOURCE_DIR}/lib)
 set_target_properties(${MAIN_TARGET_NAME}_lib PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${${PROJECT_NAME}_SOURCE_DIR}/lib)
 
+# Find the libraries that correspond to the LLVM components
+# that we wish to use
+llvm_map_components_to_libnames(llvm_libs support core irreader)
+
 # Link the client executable target to client library
-target_link_libraries(${MAIN_TARGET_NAME}_exec ${MAIN_TARGET_NAME}_lib)
+target_link_libraries(${MAIN_TARGET_NAME}_exec ${MAIN_TARGET_NAME}_lib ${llvm_libs})
