@@ -61,8 +61,8 @@ endif()
 
 set(MAIN_TARGET_NAME ${PROJECT_NAME})
 
+# Include LLVM
 find_package(LLVM REQUIRED CONFIG)
-
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
