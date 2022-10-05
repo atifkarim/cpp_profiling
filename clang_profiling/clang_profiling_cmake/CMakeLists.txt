@@ -4,12 +4,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# set(CMAKE_C_COMPILER "clang++-10")
+# Set Clang Compiler
 set(CMAKE_CXX_COMPILER "/usr/bin/clang++-10")
-# set(CMAKE_C_COMPILER clang++-10)
 set(CMAKE_CXX_COMPILER clang++-10)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg -fprofile-instr-generate -fcoverage-mapping")
 SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
 SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
 
@@ -37,37 +36,14 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   MESSAGE("MSVC")
 endif()
 
-# if (LLVM_BUILD_INSTRUMENTED OR LLVM_BUILD_INSTRUMENTED_COVERAGE OR
-#     LLVM_ENABLE_IR_PGO)
-#     MESSAGE("Clang is Working")
-#   if(NOT LLVM_PROFILE_MERGE_POOL_SIZE)
-#     # A pool size of 1-2 is probably sufficient on a SSD. 3-4 should be fine
-#     # for spining disks. Anything higher may only help on slower mediums.
-#     set(LLVM_PROFILE_MERGE_POOL_SIZE "4")
-#   endif()
-#   if(NOT LLVM_PROFILE_FILE_PATTERN)
-#     if(NOT LLVM_PROFILE_DATA_DIR)
-#       file(TO_NATIVE_PATH "${LLVM_BINARY_DIR}/profiles" LLVM_PROFILE_DATA_DIR)
-#     endif()
-#     file(TO_NATIVE_PATH "${LLVM_PROFILE_DATA_DIR}/%${LLVM_PROFILE_MERGE_POOL_SIZE}m.profraw" LLVM_PROFILE_FILE_PATTERN)
-#   endif()
-#   if(NOT LLVM_CSPROFILE_FILE_PATTERN)
-#     if(NOT LLVM_CSPROFILE_DATA_DIR)
-#       file(TO_NATIVE_PATH "${LLVM_BINARY_DIR}/csprofiles" LLVM_CSPROFILE_DATA_DIR)
-#     endif()
-#     file(TO_NATIVE_PATH "${LLVM_CSPROFILE_DATA_DIR}/%${LLVM_PROFILE_MERGE_POOL_SIZE}m.profraw" LLVM_CSPROFILE_FILE_PATTERN)
-#   endif()
-# endif()
-
 set(MAIN_TARGET_NAME ${PROJECT_NAME})
 
 # Include LLVM
-find_package(LLVM REQUIRED CONFIG)
-message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
-message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
-
-include_directories(${LLVM_INCLUDE_DIRS})
-add_definitions(${LLVM_DEFINITIONS})
+# find_package(LLVM REQUIRED CONFIG)
+# message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+# message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+# include_directories(${LLVM_INCLUDE_DIRS})
+# add_definitions(${LLVM_DEFINITIONS})
 
 # Create the C++ shared library
 add_library(${MAIN_TARGET_NAME}_lib SHARED ${${PROJECT_NAME}_SOURCE_DIR}/src/test_gprof.cpp
@@ -92,7 +68,8 @@ set_target_properties(${MAIN_TARGET_NAME}_lib PROPERTIES RUNTIME_OUTPUT_DIRECTOR
 
 # Find the libraries that correspond to the LLVM components
 # that we wish to use
-llvm_map_components_to_libnames(llvm_libs support core irreader)
+# llvm_map_components_to_libnames(llvm_libs support core irreader)
 
 # Link the client executable target to client library
-target_link_libraries(${MAIN_TARGET_NAME}_exec ${MAIN_TARGET_NAME}_lib ${llvm_libs})
+target_link_libraries(${MAIN_TARGET_NAME}_exec ${MAIN_TARGET_NAME}_lib)
+# target_link_libraries(${MAIN_TARGET_NAME}_exec ${MAIN_TARGET_NAME}_lib ${llvm_libs})
