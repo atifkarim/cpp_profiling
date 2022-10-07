@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Set Clang Compiler
-set(CMAKE_CXX_COMPILER "/usr/bin/clang++-10")
+# set(CMAKE_CXX_COMPILER "/usr/bin/clang++-10")
 set(CMAKE_CXX_COMPILER clang++-10)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg -fprofile-instr-generate -fcoverage-mapping")
